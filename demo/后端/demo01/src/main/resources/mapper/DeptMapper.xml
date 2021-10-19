@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Jingyalin.mapper.DeptMapper">
+    <resultMap id="BaseResultMap" type="com.Jingyalin.entity.Menu">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="pid" jdbcType="INTEGER" property="pid" />
+        <result column="type" jdbcType="VARCHAR" property="type" />
+        <result column="typecode" jdbcType="VARCHAR" property="typecode" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="icon" jdbcType="VARCHAR" property="icon" />
+        <result column="href" jdbcType="VARCHAR" property="href" />
+        <result column="target" jdbcType="VARCHAR" property="target" />
+        <result column="spread" jdbcType="INTEGER" property="spread" />
+        <result column="ordernum" jdbcType="INTEGER" property="ordernum" />
+        <result column="available" jdbcType="INTEGER" property="available" />
+    </resultMap>
+<insert id="addDept" parameterType="com.Jingyalin.entity.Dept">
+    insert into dept(dname,loc)values (#{dname},#{loc})
+</insert>
+
+<delete id="deleteById">
+    delete from dept where deptno=#{deptno}
+</delete>
+
+<update id="updateDeptById" parameterType="com.Jingyalin.entity.Dept">
+    update dept set dname=#{dname},loc=#{loc} where deptno=#{deptno}
+</update>
+
+<select id="findAllDept" resultType="com.Jingyalin.entity.Dept" >
+    select*from dept where 1=1
+    <if test="keywords!=null">
+        and dname like concat('%',#{keywords},'%')
+    </if>
+</select>
+    <resultMap id="MenuWithChild" type="com.Jingyalin.entity.Menu" extends="BaseResultMap">
+            <id column="id1" property="id" />
+            <result column="title1" property="title"/>
+            <result column="typecode1" property="typecode"/>
+            <collection property="children" ofType="com.Jingyalin.entity.Menu">
+                <id column="id2" property="id" />
+                <result column="title2" property="title"/>
+                <result column="typecode2" property="typecode"/>
+                <collection property="children" ofType="com.Jingyalin.entity.Menu">
+                    <id column="id3" property="id" />
+                    <result column="title3" property="title"/>
+                    <result column="typecode3" property="typecode"/>
+                </collection>
+            </collection>
+    </resultMap>
+    <select id="loadAllMenu" resultMap="MenuWithChild">
+        select distinct
+        m1.id id1,m1.title title1,m1.typecode typecode1,
+        m2.id id2,m2.title title2,m2.typecode typecode2,
+        m3.id id3,m3.title title3,m3.typecode typecode3
+        from sys_menu m1,sys_menu m2,sys_menu m3 where m1.id=m2.pid and m2.id=m3.pid
+        and m1.type!="permission"
+        and m2.type!="permission"
+        and m3.type!="permission"
+</select>
+</mapper>

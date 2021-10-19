@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <table border="1" cellspacing="0">
+     <tr>
+         <td>电话</td>
+         <td>姓名</td>
+         <td>地址</td>
+         <td>操作</td>
+     </tr>
+     <tr th:each="dept:${dept}">
+         <td th:text="${dept.deptno}"></td>
+         <td th:text="${dept.dname}"></td>
+         <td th:text="${dept.loc}"></td>
+         <td><a th:href="@{/deleteDept(deptno=${dept.deptno})}" th:text="删除"></td>
+     </tr>
+ </table>
+ <hr>
+<form th:action="@{/addDept}" th:method="post">
+    名称：<input type="text" th:name="dname"/></br>
+    地址：<input type="text" th:name="loc"/></br>
+    <input type="submit" value="添加">
+</form>
+</body>
+</html>
